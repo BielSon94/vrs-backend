@@ -8,6 +8,7 @@ import { RoutesModule } from './routes/routes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USERNAME } from './config/constants';
+import { StopsModule } from './stops/stops.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { DATABASE_HOST, DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABAS
         logging: true,
       })
     }),
-    AuthModule, UsersModule, ReservationsModule, RoutesModule],
+    AuthModule, UsersModule, ReservationsModule, RoutesModule, StopsModule],
   controllers: [AppController],
   providers: [AppService],
 })

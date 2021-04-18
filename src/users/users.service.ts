@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hash } from 'bcryptjs';
 import { from, Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -52,6 +53,7 @@ export class UsersService {
     }
 
     async updateOne(id: number, user: EditUserDto) {
+        user.password = await hash(user.password, 10);
         const updateUser = await this.userRepository.update(id, user);
         const data = await this.userRepository.findOne(id);
         return {

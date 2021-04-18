@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Inject, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Inject, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { hash } from 'bcryptjs';
 import { ValidationError } from 'class-validator';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
@@ -30,7 +31,7 @@ export class UsersController {
     }
 
     @Get(':id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     getUser(
         @Param('id', new ParseIntPipe({
             errorHttpStatusCode: HttpStatus.FORBIDDEN,
@@ -38,7 +39,7 @@ export class UsersController {
         return this.usersService.getOneUser(id);
     }
 
-    @Put(':id')
+    @Patch(':id')
     updateOne(
         @Param('id') id: number,
         @Body() editUser: EditUserDto) {
@@ -54,6 +55,6 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     removeUser(
         @Param('id') id: number): Observable<any> {
-            return this.usersService.deleteOne(id)
+            return this.usersService.deleteOne(id);
     }
 }

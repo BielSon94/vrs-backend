@@ -21,7 +21,26 @@ export class ReservationsService {
 
     async createReservation(dto: CreateReservationDto): Promise<any> {
 
-        const { userId, from, to, reservationDate, status} = dto;
+        const newReservation = new Reservation();
+
+        newReservation.from = dto.from;
+        newReservation.to = dto.to;
+        newReservation.status = dto.status;
+
+        const reservation = await this.reservationRepository.save(newReservation);
+
+        const user = await this.userService.getOneUser(dto.userId);
+
+        newReservation.user = user;
+
+        await this.reservationRepository.save(newReservation);
+
+        return {
+            message: "Reservacja stworzona pomyślnie",
+            reservation
+        }
+
+        /*const { userId, from, to, status} = dto;
 
         await this.userService.getOneUser(userId);
 
@@ -30,7 +49,7 @@ export class ReservationsService {
             return {
                 message: "Reservacja stworzona pomyślnie",
                 reservation
-            }
+            }*/
     }
 
     async getAllReservations(): Promise<GetReservationsResponse> {
@@ -61,9 +80,11 @@ export class ReservationsService {
 
         if(!reservation) throw new NotFoundException(`Rezerwacja o podanym numerze id ${id} nie istnieje.`)
 
-        const editedReservation = Object.assign(reservation, dto);
-        return await this.reservationRepository.save(editedReservation);
+        const user = await this.userService.getOneUser(dto.userId);
 
+        const editedReservation = Object.assign(reservation, dto);
+        editedReservation.user = user;
+        return await this.reservationRepository.save(editedReservation);
     }
 
     async removeReservation(id: string): Promise<any> {

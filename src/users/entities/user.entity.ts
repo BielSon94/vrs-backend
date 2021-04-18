@@ -66,7 +66,7 @@ export class User {
     })
     updatedAt: Date;
 
-    @OneToMany(type => Reservation, reservation => reservation.user)
+    @OneToMany(type => Reservation, reservation => reservation.user, { onDelete: "CASCADE"})
     reservations: ReservationI[];
 
     @BeforeInsert()

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Stop } from "src/stops/entities/stop.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('route')
 export class Route {
@@ -6,15 +7,19 @@ export class Route {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    start: string;  // PUNKT STAROTWY
+    @OneToOne(() => Stop, (stop: Stop) => stop.firstStop)
+    @JoinColumn()
+    start: Stop;
+
+    @OneToOne(() => Stop, (stop: Stop) => stop.lastStop)
+    @JoinColumn()
+    end: Stop;
 
     @Column()
-    end: string     // PUNKT DOCELOWY
+    arrival_date: Date;
 
-    @Column()
-    arrival_date: Date; // Data podróży
-
-    // TO POŁĄCZYĆ Z REZERWACJĄ
+    @ManyToMany(() => Stop, (stop: Stop) => stop.route)
+    @JoinTable()
+    stops: Stop[];
 
 }

@@ -4,8 +4,8 @@ import { ReservationStatus } from "../enums/reservation-status.enum";
 
 export class CreateReservationDto {
 
-    @IsNumber()
-    @IsNotEmpty()
+    //@IsNumber()
+    //@IsNotEmpty()
     userId: number;
 
     @IsString()
@@ -14,8 +14,8 @@ export class CreateReservationDto {
     @IsString()
     to: string;
 
-    @IsDateString()
-    reservationDate: Date;
+    //@IsDateString()
+    //reservationDate: Date;
 
     @IsOptional()
     @IsEnum(ReservationStatus)

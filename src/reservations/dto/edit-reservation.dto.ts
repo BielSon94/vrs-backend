@@ -9,7 +9,7 @@ export class EditReservationDto extends CreateReservationDto {
     @IsOptional()
     to: string;
 
-    @IsOptional()
-    reservationDate: Date;
+    //@IsOptional()
+    //reservationDate: Date;
 
 }

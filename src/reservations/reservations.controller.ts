@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, ParseUUIDPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, ParseUUIDPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { UserI } from 'src/users/interfaces/user.interface';
@@ -31,7 +31,7 @@ export class ReservationsController {
         return this.reservationService.getOneReservation(id);
     }
 
-    @Put(':id')
+    @Patch(':id')
     editOne(
         @Param('id', new ParseUUIDPipe({errorHttpStatusCode: HttpStatus.FORBIDDEN, version: "4"})) id: string,
         @Body() dto: EditReservationDto) {

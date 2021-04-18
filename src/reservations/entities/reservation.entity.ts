@@ -35,7 +35,7 @@ export class Reservation implements ReservationI{
     })
     updatedAt: Date;
 
-    @ManyToOne(type=> User, user => user.reservations)
+    @ManyToOne(type=> User, user => user.reservations, { onDelete: "CASCADE"})
     @JoinColumn()
     user: UserI;
 }
