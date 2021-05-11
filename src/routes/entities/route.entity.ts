@@ -1,5 +1,8 @@
+import { Reservation } from "src/reservations/entities/reservation.entity";
+import { ReservationI } from "src/reservations/interfaces/reservation.model";
 import { Stop } from "src/stops/entities/stop.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('route')
 export class Route {
@@ -7,19 +10,30 @@ export class Route {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => Stop, (stop: Stop) => stop.firstStop)
+    @ManyToOne(() => Stop, (stop: Stop) => stop.firstStop, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn()
     start: Stop;
 
-    @OneToOne(() => Stop, (stop: Stop) => stop.lastStop)
+    @ManyToOne(() => Stop, (stop: Stop) => stop.lastStop, {
+        onDelete: 'CASCADE'
+    })
     @JoinColumn()
     end: Stop;
 
     @Column()
     arrival_date: Date;
 
-    @ManyToMany(() => Stop, (stop: Stop) => stop.route)
+    @ManyToOne(() => User, (driver: User) => driver.route, {
+        onDelete: 'SET NULL'
+    })
     @JoinTable()
-    stops: Stop[];
+    driver: User;
 
+    @OneToMany(() => Reservation, (reservation: Reservation) => reservation.route, {
+        onDelete: 'CASCADE'
+    })
+    @JoinTable()
+    reservations: ReservationI;
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from './entities/reservation.entity';
@@ -9,22 +9,25 @@ import { EditReservationDto } from './dto/edit-reservation.dto';
 import { UserI } from 'src/users/interfaces/user.interface';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
-import { error } from 'node:console';
+import { RoutesService } from 'src/routes/routes.service';
+import { Route as RouteI} from '../routes/interfaces/route.model';
+import { GetTicketResponse } from './interfaces/ticket.model';
 
 @Injectable()
 export class ReservationsService {
 
     constructor(
         @InjectRepository(Reservation) private reservationRepository: Repository<Reservation>,
-        @Inject(UsersService) private readonly userService: UsersService
+        @Inject(UsersService) private readonly userService: UsersService,
+        @Inject(forwardRef(() => RoutesService)) private readonly routeService: RoutesService
     ) {}
 
     async createReservation(dto: CreateReservationDto): Promise<any> {
 
         const newReservation = new Reservation();
 
-        newReservation.from = dto.from;
-        newReservation.to = dto.to;
+        //newReservation.from = dto.from;
+        //newReservation.to = dto.to;
         newReservation.status = dto.status;
 
         const reservation = await this.reservationRepository.save(newReservation);
@@ -35,10 +38,17 @@ export class ReservationsService {
 
         await this.reservationRepository.save(newReservation);
 
+        const route = await this.routeService.getRoute(dto.routeId);
+
+        newReservation.route = route;
+
+        await this.reservationRepository.save(newReservation);
+
         return {
             message: "Reservacja stworzona pomyślnie",
             reservation
         }
+
 
         /*const { userId, from, to, status} = dto;
 
@@ -52,8 +62,13 @@ export class ReservationsService {
             }*/
     }
 
+    async createUserReservation(): Promise<any> {
+
+
+    }
+
     async getAllReservations(): Promise<GetReservationsResponse> {
-        const reservations = await this.reservationRepository.find({ relations: ['user']});
+        const reservations = await this.reservationRepository.find({ relations: ['user', 'route', 'route.start', 'route.end']});
 
         if(reservations.length < 1){
             return {
@@ -67,8 +82,25 @@ export class ReservationsService {
         }
     }
 
+    async getUserTicket(id: number): Promise<GetTicketResponse> {
+        const userId = await this.userService.getOne(id);
+        console.log(userId);
+        const ticket = await this.reservationRepository.find({relations: ['user', 'route', 'route.start', 'route.end'], where: {user: userId}});
+
+        if(!ticket) {
+            return {
+                message: "Nie udało sie pobrać rezerwacji"
+            }
+        }
+
+        return {
+            message: "",
+            ticket
+        }
+    }
+
     async getOneReservation(id: string) {
-        const reservation = await this.reservationRepository.findOne({id}, {relations: ['user']},);
+        const reservation = await this.reservationRepository.findOne({id}, {relations: ['user', 'route']},);
 
         if (!reservation) throw new NotFoundException(`Nie znaleziono rezerwacji o podanym numerze id: ${id}.`)
 

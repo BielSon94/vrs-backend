@@ -30,6 +30,12 @@ export class UsersController {
         return this.usersService.getAllUsers();
     }
 
+    @Get('/driver')
+    getDriver() {
+        const driver = this.usersService.findDriver();
+        return driver
+    }
+
     @Get(':id')
     //@UseGuards(JwtAuthGuard)
     getUser(
@@ -57,4 +63,6 @@ export class UsersController {
         @Param('id') id: number): Observable<any> {
             return this.usersService.deleteOne(id);
     }
+
+
 }

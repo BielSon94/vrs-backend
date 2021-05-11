@@ -1,7 +1,8 @@
 import { hash } from "bcryptjs";
 import { Reservation } from "src/reservations/entities/reservation.entity";
 import { ReservationI } from "src/reservations/interfaces/reservation.model";
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Route } from "src/routes/entities/route.entity";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserRole } from "../enums/user-role.enum";
 
 @Entity({ name: "user" })
@@ -66,8 +67,11 @@ export class User {
     })
     updatedAt: Date;
 
-    @OneToMany(type => Reservation, reservation => reservation.user, { onDelete: "CASCADE"})
+    @ManyToOne(type => Reservation, reservation => reservation.user, { onDelete: "CASCADE"})
     reservations: ReservationI[];
+
+    @ManyToOne(() => Route, route => route.driver, { onDelete: "CASCADE"})
+    route: Route[];
 
     @BeforeInsert()
     @BeforeUpdate()

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, ParseUUIDPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guard';
 import { UserI } from 'src/users/interfaces/user.interface';
@@ -19,10 +19,16 @@ export class ReservationsController {
         return this.reservationService.createReservation(dto);
     }
 
-    @Get('/')
-    @UseGuards(JwtAuthGuard)
+    @Get()
+    //@UseGuards(JwtAuthGuard)
     getAll(): Promise<GetReservationsResponse> {
         return this.reservationService.getAllReservations();
+    }
+
+    @Get('tickets/:id')
+    getUserTicket(
+        @Param('id') id: number) {
+        return this.reservationService.getUserTicket(id);
     }
 
     @Get(':id')

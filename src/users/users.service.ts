@@ -42,6 +42,19 @@ export class UsersService {
         return data;
     }
 
+    async findDriver() {
+        return await this.userRepository.find({isEmployee: true})
+    }
+
+    async getDriver(id: number) {
+        const data = await this.userRepository.findOne({id, isEmployee: true});
+        if (!data) {
+            throw new HttpException('Nie znaleziono kierowcy o podanym numerze ID.', HttpStatus.NOT_FOUND);
+        }
+
+        return data;
+    }
+
     async getOneUser(id: number): Promise<any> {
         const user = await this.userRepository.findOne(id);
 
@@ -53,12 +66,27 @@ export class UsersService {
     }
 
     async updateOne(id: number, user: EditUserDto) {
+
+        if(user.password == null) {
+            delete user.password;
+            const updateUser = await this.userRepository.update(id, user);
+            return {
+                updateUser
+            }
+        } else {
+            user.password = await hash(user.password, 10);
+            const updateUser = await this.userRepository.update(id, user);
+            const data = await this.userRepository.findOne(id);
+            return {
+                updateUser, data
+            }
+        }
+        /*
         user.password = await hash(user.password, 10);
         const updateUser = await this.userRepository.update(id, user);
         const data = await this.userRepository.findOne(id);
-        return {
-            updateUser, data
-        }
+        */
+
     }
 
     deleteOne(id: number): Observable<any> {
@@ -82,5 +110,7 @@ export class UsersService {
           .where(data)
           .addSelect('user.password')
           .getOne();
-      }
+    }
+
+
 }

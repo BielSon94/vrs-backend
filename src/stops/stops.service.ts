@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStopDto } from './dto/create-stop.dto';
+import { EditStopDto } from './dto/edit-stop.dto';
 import { Stop } from './entities/stop.entity';
 import { StopResponse } from './interfaces/stop-response.model';
 
@@ -31,6 +32,12 @@ export class StopsService {
     }
 
     async createStop(dto: CreateStopDto): Promise<StopResponse | any> {
+        const stopExist = await this.stopRepository.findOne({ name: dto.name});
+
+        if (stopExist) {
+            throw new HttpException("Przystanek o takiej nazwie już istnieje", HttpStatus.CONFLICT);
+        }
+
         const newStop = new Stop();
 
         newStop.name = dto.name;
@@ -45,4 +52,25 @@ export class StopsService {
         }
     }
 
+    async editStop(id: number, stop: EditStopDto) {
+
+        const stopExist = await this.stopRepository.findOne({name: stop.name});
+
+        if(stopExist) {
+            throw new HttpException("Przystanek o takiej nazwie już istnieje", HttpStatus.CONFLICT);
+        } else {
+            const newStop = await this.stopRepository.update(id, stop);
+            return {
+                message: 'Zaktualizowano pomyślnie',
+                newStop
+            }
+        }
+    }
+
+    async deleteStop(id: number): Promise<any> {
+        await this.stopRepository.delete(id);
+        return {
+            message: "Usunięto pomyślnie"
+        }
+    }
 }

@@ -1,14 +1,15 @@
+import { ReservationI } from "src/reservations/interfaces/reservation.model";
 import { Stop } from "src/stops/interfaces/stop.model";
 
 export interface Route {
 
     id?: number;
 
-    start: string; //punkt startowy numer przystanku
+    start: Stop; //punkt startowy numer przystanku
 
-    end: string; // PUNKT DOCELOWY numer przystanku
+    end: Stop; // PUNKT DOCELOWY numer przystanku
 
     arrival_date: Date; // Data podróży
 
-    stops: Stop[] | null;//Array<Stop>; // Lista przystanków pomiędzy;
+    reservations: ReservationI
 }

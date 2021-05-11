@@ -5,5 +5,4 @@ export interface StopResponse {
     message: string;
     stop: Stop;
 
-
 }

@@ -1,20 +1,16 @@
+import { Route } from "src/routes/entities/route.entity";
 import { User } from "src/users/entities/user.entity";
 import { UserI } from "src/users/interfaces/user.interface";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ReservationStatus } from "../enums/reservation-status.enum";
 import { ReservationI } from "../interfaces/reservation.model";
+import { Route as RouteI } from "../../routes/interfaces/route.model";
 
 @Entity('reservation')
-export class Reservation implements ReservationI{
+export class Reservation{
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
-    @Column()
-    from: string;
-
-    @Column()
-    to: string;
 
     @Column({
         type: "enum",
@@ -35,7 +31,11 @@ export class Reservation implements ReservationI{
     })
     updatedAt: Date;
 
-    @ManyToOne(type=> User, user => user.reservations, { onDelete: "CASCADE"})
-    @JoinColumn()
+    @ManyToOne(()=> User, user => user.reservations, { onDelete: "CASCADE"})
+    @JoinTable()
     user: UserI;
+
+    @ManyToOne(() => Route, route => route.reservations, { onDelete: 'CASCADE'})
+    @JoinTable()
+    route: RouteI;
 }

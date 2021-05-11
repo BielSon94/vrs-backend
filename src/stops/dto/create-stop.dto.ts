@@ -16,7 +16,7 @@ export class CreateStopDto {
     @IsNumber()
     lng: number | null;
 
-    @IsOptional()
-    route: Route | null;
+    //@IsOptional()
+    //route: Route | null;
 
 }

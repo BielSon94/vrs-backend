@@ -8,7 +8,7 @@ export class EditUserDto extends CreateUserDto{
     email: string;
 
     @IsOptional()
-    password: string;
+    password: string | null;
 
     @IsOptional()
     firstName: string;

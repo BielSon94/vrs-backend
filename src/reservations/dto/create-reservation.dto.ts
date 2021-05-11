@@ -1,4 +1,5 @@
 import { IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { Stop } from "src/stops/interfaces/stop.model";
 import { UserI } from "src/users/interfaces/user.interface";
 import { ReservationStatus } from "../enums/reservation-status.enum";
 
@@ -8,12 +9,6 @@ export class CreateReservationDto {
     //@IsNotEmpty()
     userId: number;
 
-    @IsString()
-    from: string;
-
-    @IsString()
-    to: string;
-
     //@IsDateString()
     //reservationDate: Date;
 
@@ -21,6 +16,8 @@ export class CreateReservationDto {
     @IsEnum(ReservationStatus)
     status: ReservationStatus;
 
+    @IsOptional()
+    routeId: number;
 }
 
 
