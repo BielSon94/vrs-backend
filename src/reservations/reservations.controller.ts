@@ -20,7 +20,7 @@ export class ReservationsController {
     }
 
     @Get()
-    //@UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     getAll(): Promise<GetReservationsResponse> {
         return this.reservationService.getAllReservations();
     }
